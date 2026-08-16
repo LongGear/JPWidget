@@ -30,9 +30,7 @@ public class JawaPowerWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        for (int id : appWidgetIds) {
-            updateWidget(context, appWidgetManager, id);
-        }
+        refreshWidgets(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
@@ -42,11 +40,33 @@ public class JawaPowerWidgetProvider extends AppWidgetProvider {
             AppWidgetManager manager = AppWidgetManager.getInstance(context);
             int[] ids = manager.getAppWidgetIds(
                     new ComponentName(context, JawaPowerWidgetProvider.class));
-            onUpdate(context, manager, ids);
+            refreshWidgets(context, manager, ids);
         }
     }
 
-    private void updateWidget(Context context, AppWidgetManager manager, int widgetId) {
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+        // Widget pertama kali dipasang -> nyalakan service pemantau layar
+        JawaPowerUpdateService.start(context);
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        super.onDisabled(context);
+        // Widget terakhir dihapus -> matikan service
+        JawaPowerUpdateService.stop(context);
+    }
+
+    /** Dipanggil dari provider maupun dari JawaPowerUpdateService untuk memicu refresh data. */
+    static void refreshWidgets(Context context, AppWidgetManager manager, int[] appWidgetIds) {
+        if (appWidgetIds == null) return;
+        for (int id : appWidgetIds) {
+            updateWidget(context, manager, id);
+        }
+    }
+
+    private static void updateWidget(Context context, AppWidgetManager manager, int widgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
         Intent refreshIntent = new Intent(context, JawaPowerWidgetProvider.class);
@@ -56,13 +76,13 @@ public class JawaPowerWidgetProvider extends AppWidgetProvider {
                 widgetId,
                 refreshIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        views.setOnClickPendingIntent(R.id.widget_title, pendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
         manager.updateAppWidget(widgetId, views);
 
         executor.execute(() -> fetchAndUpdate(context, manager, widgetId, pendingIntent));
     }
 
-    private void fetchAndUpdate(Context context, AppWidgetManager manager, int widgetId, PendingIntent pendingIntent) {
+    private static void fetchAndUpdate(Context context, AppWidgetManager manager, int widgetId, PendingIntent pendingIntent) {
         String unit5 = "-";
         String unit6 = "-";
         String timestamp = "";
@@ -94,10 +114,10 @@ public class JawaPowerWidgetProvider extends AppWidgetProvider {
         }
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-        views.setTextViewText(R.id.widget_unit5, "Unit5: " + unit5);
-        views.setTextViewText(R.id.widget_unit6, "Unit6: " + unit6);
+        views.setTextViewText(R.id.widget_unit5, "Unit 50: " + unit5);
+        views.setTextViewText(R.id.widget_unit6, "Unit 60: " + unit6);
         views.setTextViewText(R.id.widget_time, timestamp);
-        views.setOnClickPendingIntent(R.id.widget_title, pendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
         manager.updateAppWidget(widgetId, views);
     }
 }
