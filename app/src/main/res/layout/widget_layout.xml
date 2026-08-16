@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#CC000000"
+    android:padding="8dp"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/widget_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Jawa Power (ketuk utk refresh)"
+        android:textColor="#FFD700"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/widget_unit5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unit5: -"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/widget_unit6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unit6: -"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/widget_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="#AAAAAA"
+        android:textSize="10sp" />
+
+</LinearLayout>
