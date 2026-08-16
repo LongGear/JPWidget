@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@android:color/transparent"
-    android:padding="8dp"
+    android:padding="4dp"
     android:gravity="center">
 
     <TextView
@@ -15,7 +15,7 @@
         android:text="Unit 50: -"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:textSize="18sp" />
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/widget_unit6"
@@ -24,7 +24,7 @@
         android:text="Unit 60: -"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:textSize="18sp" />
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/widget_time"
@@ -32,6 +32,6 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textColor="#AAAAAA"
-        android:textSize="10sp" />
+        android:textSize="8sp" />
 
 </LinearLayout>

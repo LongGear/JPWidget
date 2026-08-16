@@ -30,11 +30,9 @@ public class JawaPowerWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        refreshWidgets(context, appWidgetManager, appWidgetIds);
-        // Pastikan service pemantau layar menyala. onEnabled() cuma dipanggil sekali
-        // (waktu widget pertama dipasang), jadi kalau APK di-update sementara widget
-        // sudah terpasang, service perlu dinyalakan ulang dari sini.
-        JawaPowerUpdateService.start(context);
+        for (int id : appWidgetIds) {
+            updateWidget(context, appWidgetManager, id);
+        }
     }
 
     @Override
@@ -44,33 +42,11 @@ public class JawaPowerWidgetProvider extends AppWidgetProvider {
             AppWidgetManager manager = AppWidgetManager.getInstance(context);
             int[] ids = manager.getAppWidgetIds(
                     new ComponentName(context, JawaPowerWidgetProvider.class));
-            refreshWidgets(context, manager, ids);
+            onUpdate(context, manager, ids);
         }
     }
 
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-        // Widget pertama kali dipasang -> nyalakan service pemantau layar
-        JawaPowerUpdateService.start(context);
-    }
-
-    @Override
-    public void onDisabled(Context context) {
-        super.onDisabled(context);
-        // Widget terakhir dihapus -> matikan service
-        JawaPowerUpdateService.stop(context);
-    }
-
-    /** Dipanggil dari provider maupun dari JawaPowerUpdateService untuk memicu refresh data. */
-    static void refreshWidgets(Context context, AppWidgetManager manager, int[] appWidgetIds) {
-        if (appWidgetIds == null) return;
-        for (int id : appWidgetIds) {
-            updateWidget(context, manager, id);
-        }
-    }
-
-    private static void updateWidget(Context context, AppWidgetManager manager, int widgetId) {
+    private void updateWidget(Context context, AppWidgetManager manager, int widgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
         Intent refreshIntent = new Intent(context, JawaPowerWidgetProvider.class);
@@ -86,7 +62,7 @@ public class JawaPowerWidgetProvider extends AppWidgetProvider {
         executor.execute(() -> fetchAndUpdate(context, manager, widgetId, pendingIntent));
     }
 
-    private static void fetchAndUpdate(Context context, AppWidgetManager manager, int widgetId, PendingIntent pendingIntent) {
+    private void fetchAndUpdate(Context context, AppWidgetManager manager, int widgetId, PendingIntent pendingIntent) {
         String unit5 = "-";
         String unit6 = "-";
         String timestamp = "";
