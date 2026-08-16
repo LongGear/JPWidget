@@ -31,6 +31,10 @@ public class JawaPowerWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         refreshWidgets(context, appWidgetManager, appWidgetIds);
+        // Pastikan service pemantau layar menyala. onEnabled() cuma dipanggil sekali
+        // (waktu widget pertama dipasang), jadi kalau APK di-update sementara widget
+        // sudah terpasang, service perlu dinyalakan ulang dari sini.
+        JawaPowerUpdateService.start(context);
     }
 
     @Override
